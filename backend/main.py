@@ -23,9 +23,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(recipes.router)
-app.include_router(meal_plans.router)
+app.include_router(recipes.router, prefix="/api")
+app.include_router(meal_plans.router, prefix="/api")
 
 @app.get("/")
 def read_root():
+    return {"message": "Welcome to Meal Planner API"}
+
+@app.get("/api")
+def read_api_root():
     return {"message": "Welcome to Meal Planner API"}
