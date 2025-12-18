@@ -1,3 +1,9 @@
+import sys
+import os
+
+# Add the current directory to sys.path to ensure modules are found
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routers import recipes, meal_plans
