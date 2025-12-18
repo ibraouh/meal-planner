@@ -28,4 +28,10 @@ html {
 body {
   background-color: #fff7ed;
   color: #111827; /* gray-900 equivalent */
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.dark body {
+  background-color: #111827; /* gray-900 */
+  color: #f3f4f6; /* gray-100 */
 }

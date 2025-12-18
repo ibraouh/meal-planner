@@ -17,13 +17,22 @@ export function ThemeProvider({ children }) {
     if (theme === 'system' || theme === 'auto') {
       const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
       root.classList.add(systemTheme)
+      updateThemeColor(systemTheme)
     } else {
       root.classList.add(theme)
+      updateThemeColor(theme)
     }
     
     // Save to local storage
     localStorage.setItem('theme', theme)
   }, [theme])
+
+  const updateThemeColor = (mode) => {
+      const themeColorMeta = document.querySelector('meta[name="theme-color"]')
+      if (themeColorMeta) {
+          themeColorMeta.setAttribute('content', mode === 'dark' ? '#111827' : '#fff7ed')
+      }
+  }
 
   // Listen for system changes if in auto mode
   useEffect(() => {
@@ -33,7 +42,13 @@ export function ThemeProvider({ children }) {
     const handleChange = () => {
         const root = window.document.documentElement
         root.classList.remove('light', 'dark')
-        root.classList.add(mediaQuery.matches ? 'dark' : 'light')
+        const newTheme = mediaQuery.matches ? 'dark' : 'light'
+        root.classList.add(newTheme)
+        
+        const themeColorMeta = document.querySelector('meta[name="theme-color"]')
+        if (themeColorMeta) {
+            themeColorMeta.setAttribute('content', newTheme === 'dark' ? '#111827' : '#fff7ed')
+        }
     }
 
     mediaQuery.addEventListener('change', handleChange)
