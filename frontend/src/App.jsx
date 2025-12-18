@@ -15,7 +15,7 @@ function SettingsView() {
         <div className="max-w-md mx-auto space-y-6">
             <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">Settings</h2>
             
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-orange-100 dark:border-gray-700 p-4">
                 <h3 className="font-semibold text-gray-700 dark:text-gray-200 mb-4 flex items-center gap-2">
                     Appearance
                 </h3>
@@ -44,7 +44,7 @@ function SettingsView() {
                 </div>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-orange-100 dark:border-gray-700 p-4">
                 <h3 className="font-semibold text-gray-700 dark:text-gray-200 mb-4">Account</h3>
                 <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg mb-4">
                     <div className="text-sm">
@@ -78,9 +78,9 @@ function AppContent() {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 pb-24 md:pb-8 transition-colors duration-200">
+    <div className="min-h-screen bg-orange-50 dark:bg-gray-900 pb-24 md:pb-8 transition-colors duration-200">
       {/* Sticky Header */}
-      <header className="sticky top-0 z-40 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 shadow-sm px-4 py-3 mb-6 transition-colors duration-200">
+      <header className="sticky top-0 z-40 bg-orange-50/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-orange-100 dark:border-gray-800 shadow-sm px-4 py-3 mb-6 transition-colors duration-200">
         <div className="max-w-5xl mx-auto flex justify-between items-center">
           <div>
              <h1 className="text-2xl md:text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-amber-500 flex items-center gap-2">
@@ -90,10 +90,10 @@ function AppContent() {
 
           <div className="flex items-center gap-4">
              {/* Desktop Nav */}
-             <nav className="hidden md:flex bg-orange-50 dark:bg-gray-800 p-1 rounded-lg">
+             <nav className="hidden md:flex bg-orange-100/50 dark:bg-gray-800 p-1 rounded-lg">
                 <button 
                     onClick={() => setView('planner')}
-                    className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all flex items-center gap-2 ${view === 'planner' ? 'bg-white dark:bg-gray-700 text-orange-600 dark:text-orange-400 shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'}`}
+                    className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all flex items-center gap-2 ${view === 'planner' ? 'bg-white dark:bg-gray-700 text-orange-600 dark:text-orange-400 shadow-sm' : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'}`}
                 >
                     <Calendar size={16} /> Planner
                 </button>
@@ -141,8 +141,8 @@ function AppContent() {
       </main>
 
       {/* Mobile Bottom Nav */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 pt-3 px-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] flex justify-around items-center z-40 md:hidden transition-colors duration-200">
-        <button 
+      <nav className="fixed bottom-0 left-0 right-0 bg-orange-50 dark:bg-gray-900 border-t border-orange-100 dark:border-gray-800 pt-3 px-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] flex justify-around items-center z-40 md:hidden transition-colors duration-200">
+        <button  
           onClick={() => setView('planner')}
           className={`flex flex-col items-center gap-1 w-16 ${view === 'planner' ? 'text-orange-600 dark:text-orange-400' : 'text-gray-400 dark:text-gray-500'}`}
         >
