@@ -1,25 +1,22 @@
 import { useState } from 'react'
 import { api } from '../lib/api'
 import { ChevronDown, Image, AlignLeft, List, Flame, Activity } from 'lucide-react'
+import { useQueryClient } from '@tanstack/react-query'
 
 const CATEGORIES = ['Breakfast', 'Lunch', 'Dinner', 'Snack', 'Other']
 
 export default function RecipeForm({ onRecipeCreated, initialData = null, onCancel = null }) {
+  const queryClient = useQueryClient()
   const [formData, setFormData] = useState(initialData || {
     name: '',
-    description: '',
-    instructions: '',
-    image_url: '',
-    category: 'Dinner',
-    calories_per_serving: 0,
-    protein_g: 0,
-    carbs_g: 0,
+// ... (keep state)
     fat_g: 0,
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
   const handleChange = (e) => {
+    // ... (keep logic)
     const { name, value, type } = e.target
     setFormData(prev => ({
       ...prev,
@@ -50,7 +47,8 @@ export default function RecipeForm({ onRecipeCreated, initialData = null, onCanc
           })
       }
       
-      if (onRecipeCreated) onRecipeCreated()
+      queryClient.invalidateQueries(['recipes'])
+      if (onRecipeCreated) onRecipeCreated() // Call if passed, but query invalidation handles the data
     } catch (err) {
       console.error(err)
       setError("Failed to save recipe")

@@ -8,7 +8,6 @@ import { Calendar, Utensils, LogOut, ChefHat } from 'lucide-react'
 
 function AppContent() {
   const { user, signOut } = useAuth()
-  const [refreshKey, setRefreshKey] = useState(0)
   const [view, setView] = useState('planner') // 'planner' or 'recipes'
 
   if (!user) {
@@ -60,11 +59,11 @@ function AppContent() {
         ) : (
           <>
              <section>
-              <RecipeForm onRecipeCreated={() => setRefreshKey(prev => prev + 1)} />
+              <RecipeForm />
             </section>
             <section>
               <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2"><Utensils size={20} className="text-teal-500"/> Recipe Gallery</h2>
-              <RecipeList keyRefresh={refreshKey} />
+              <RecipeList />
             </section>
           </>
         )}

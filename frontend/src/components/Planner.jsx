@@ -3,15 +3,14 @@ import { api } from '../lib/api'
 import { format, startOfWeek, addDays, getDay } from 'date-fns'
 import RecipeModal from './RecipeModal'
 import { ChevronLeft, ChevronRight, X, Plus, Trash2 } from 'lucide-react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
 const MEAL_TYPES = ['Breakfast', 'Lunch', 'Dinner', 'Snack']
 
 export default function Planner() {
+  const queryClient = useQueryClient()
   const [currentDate, setCurrentDate] = useState(new Date())
-  const [weekMeals, setWeekMeals] = useState([])
-  const [recipes, setRecipes] = useState([])
-  const [refresh, setRefresh] = useState(0)
-
+  
   // Modal State
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [selectedSlot, setSelectedSlot] = useState(null) // { dateStr, mealType }
@@ -22,29 +21,19 @@ export default function Planner() {
   const startStr = format(weekDates[0], 'yyyy-MM-dd')
   const endStr = format(weekDates[6], 'yyyy-MM-dd')
 
-  useEffect(() => {
-    // Fetch meals
-    const fetchMeals = async () => {
-        try {
-            const data = await api.get(`/meal-plans/?start_date=${startStr}&end_date=${endStr}`)
-            setWeekMeals(data)
-        } catch (e) {
-            console.error(e)
-        }
-    }
-    fetchMeals()
-  }, [startStr, refresh])
+  // 1. Fetch Meals (Cached)
+  const { data: weekMeals = [] } = useQuery({
+      queryKey: ['mealPlans', startStr, endStr],
+      queryFn: () => api.get(`/meal-plans/?start_date=${startStr}&end_date=${endStr}`),
+      keepPreviousData: true,
+  })
 
-  useEffect(() => {
-    // Fetch recipes for the dropdown
-    const fetchRecipes = async () => {
-        try {
-            const data = await api.get('/recipes/')
-            setRecipes(data)
-        } catch (e) { console.error(e) }
-    }
-    fetchRecipes()
-  }, [])
+  // 2. Fetch Recipes (Shared Cache!)
+  const { data: recipes = [] } = useQuery({
+      queryKey: ['recipes'],
+      queryFn: () => api.get('/recipes/'),
+      staleTime: 1000 * 60 * 5,
+  })
 
 
   const handleAddMealClick = (dateStr, mealType) => {
@@ -60,7 +49,7 @@ export default function Planner() {
             meal_type: selectedSlot.mealType,
             recipe_id: recipeId
         })
-        setRefresh(prev => prev + 1)
+        queryClient.invalidateQueries(['mealPlans'])
         setIsAddModalOpen(false)
         setSelectedSlot(null)
     } catch (e) {
@@ -73,7 +62,7 @@ export default function Planner() {
      if(!confirm("Remove this meal?")) return
      try {
          await api.delete(`/meal-plans/${id}`)
-         setRefresh(prev => prev + 1)
+         queryClient.invalidateQueries(['mealPlans'])
      } catch (e) { alert("Failed to delete")}
   }
 
@@ -188,8 +177,14 @@ export default function Planner() {
           <RecipeModal 
             recipe={selectedRecipeForView}
             onClose={() => setSelectedRecipeForView(null)}
-            onUpdate={() => setRefresh(prev => prev + 1)}
-            onDelete={() => setRefresh(prev => prev + 1)}
+            onUpdate={() => {
+                queryClient.invalidateQueries(['recipes'])
+                queryClient.invalidateQueries(['mealPlans'])
+            }}
+            onDelete={() => {
+                queryClient.invalidateQueries(['recipes'])
+                queryClient.invalidateQueries(['mealPlans'])
+            }}
           />
       )}
     </div>
