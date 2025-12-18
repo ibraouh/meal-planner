@@ -1,5 +1,28 @@
 @import "tailwindcss";
 
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  overflow-y: auto; /* Allow scrolling but hide bar below */
+}
+
+/* Hide Scrollbar */
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent; /* Optional: just make scrollbar invisible */
+}
+
+html {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* IE 10+ */
+}
+
 /* Custom Utilities if needed */
 body {
   background-color: #f9fafb; /* gray-50 equivalent */

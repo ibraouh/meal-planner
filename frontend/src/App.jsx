@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import Auth from './components/Auth'
 import RecipeForm from './components/RecipeForm'
@@ -9,6 +9,11 @@ import { Calendar, Utensils, LogOut, ChefHat } from 'lucide-react'
 function AppContent() {
   const { user, signOut } = useAuth()
   const [view, setView] = useState('planner') // 'planner' or 'recipes'
+
+  // Scroll to top when switching views
+  useEffect(() => {
+     window.scrollTo(0, 0)
+  }, [view])
 
   if (!user) {
     return <Auth />
