@@ -102,7 +102,7 @@ export default function Planner() {
             const nutrition = getDailyNutrition(dateStr)
 
             return (
-                <div key={dateStr} className={`bg-white rounded-xl shadow-sm border ${isToday ? 'border-teal-500 ring-1 ring-teal-500' : 'border-gray-100'} overflow-hidden flex flex-col`}>
+                <div key={dateStr} className={`bg-white rounded-xl shadow-sm border ${isToday ? 'border-orange-500 ring-1 ring-orange-500' : 'border-gray-100'} overflow-hidden flex flex-col`}>
                     <div className="p-3 bg-gray-50 border-b border-gray-100 text-center">
                         <div className="font-bold text-gray-700">{format(date, 'EEE')}</div>
                         <div className="text-xs text-gray-500">{format(date, 'MMM d')}</div>
@@ -116,10 +116,10 @@ export default function Planner() {
                                     <div className="text-xs font-bold text-gray-400 mb-1 uppercase tracking-wide">{type}</div>
                                     {meal ? (
                                         <div 
-                                            onClick={() => setSelectedRecipeForView(meal.recipe)}
-                                            className="group relative bg-teal-50 border border-teal-100 p-2 rounded-lg text-sm cursor-pointer hover:bg-teal-100 transition-colors"
+                                            onClick={() => setSelectedRecipeForView(recipes.find(r => r.id === meal.recipe.id))}
+                                            className="group relative bg-orange-50 border border-orange-100 p-2 rounded-lg text-sm cursor-pointer hover:bg-orange-100 transition-colors"
                                         >
-                                            <div className="font-medium text-teal-900 line-clamp-2 pr-4">
+                                            <div className="font-medium text-orange-900 line-clamp-2 pr-4">
                                                 {meal.recipe?.name || 'Unknown Recipe'}
                                             </div>
                                             <button 
@@ -130,12 +130,12 @@ export default function Planner() {
                                             </button>
                                         </div>
                                     ) : (
-                                        <button 
-                                            onClick={() => handleAddMealClick(dateStr, type)}
-                                            className="w-full h-full border-2 border-dashed border-gray-100 rounded-lg flex items-center justify-center text-gray-300 hover:border-teal-200 hover:text-teal-400 transition-colors"
-                                        >
-                                            <Plus size={16} />
-                                        </button>
+                                        <div 
+                                          onClick={() => handleAddMealClick(dateStr, type)}
+                                          className="w-full h-full border-2 border-dashed border-gray-200 rounded-lg flex items-center justify-center text-gray-300 hover:border-orange-300 hover:bg-orange-50 hover:text-orange-400 transition-all cursor-pointer"
+                                      >
+                                          <Plus size={20} strokeWidth={3} />
+                                      </div>
                                     )}
                                 </div>
                             )

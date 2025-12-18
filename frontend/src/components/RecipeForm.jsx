@@ -84,7 +84,7 @@ export default function RecipeForm({ onRecipeCreated, initialData = null, onCanc
                 value={formData.name}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
           </div>
           
@@ -95,7 +95,7 @@ export default function RecipeForm({ onRecipeCreated, initialData = null, onCanc
                     name="category"
                     value={formData.category}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-500 appearance-none cursor-pointer"
+                    className="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500 appearance-none cursor-pointer"
                 >
                     {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                 </select>
@@ -110,7 +110,7 @@ export default function RecipeForm({ onRecipeCreated, initialData = null, onCanc
                 placeholder="https://..."
                 value={formData.image_url}
                 onChange={handleChange}
-                className="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
           </div>
           
@@ -122,7 +122,7 @@ export default function RecipeForm({ onRecipeCreated, initialData = null, onCanc
                 value={formData.description}
                 onChange={handleChange}
                 rows={3}
-                className="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
           </div>
         </div>
@@ -130,7 +130,7 @@ export default function RecipeForm({ onRecipeCreated, initialData = null, onCanc
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
              <div>
-                <label className="block text-xs font-bold text-teal-600 uppercase mb-1 flex items-center gap-1"><Flame size={12}/> Calories</label>
+                <label className="block text-xs font-bold text-orange-600 uppercase mb-1 flex items-center gap-1"><Flame size={12}/> Calories</label>
                 <input name="calories_per_serving" type="number" placeholder="0" value={formData.calories_per_serving} onChange={handleChange} className="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-200" />
              </div>
              <div>
@@ -156,7 +156,7 @@ export default function RecipeForm({ onRecipeCreated, initialData = null, onCanc
                 onChange={handleChange}
                 required
                 rows={6}
-                className="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500"
              />
           </div>
         </div>
@@ -165,7 +165,7 @@ export default function RecipeForm({ onRecipeCreated, initialData = null, onCanc
       <button
         type="submit"
         disabled={loading}
-        className="w-full px-4 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 transition-all shadow-md disabled:opacity-50"
+        className="w-full px-4 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 transition-all shadow-md disabled:opacity-50"
       >
         {loading ? 'Saving...' : (initialData ? 'Update Recipe' : 'Save Recipe')}
       </button>

@@ -27,7 +27,7 @@ export default function Auth() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[50vh] p-4 text-center">
-      <h1 className="text-4xl font-extrabold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-blue-500">
+      <h1 className="text-4xl font-extrabold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-500">
         Meal Planner
       </h1>
       <div className="w-full max-w-sm p-8 bg-white rounded-2xl shadow-xl border border-gray-100">
@@ -36,7 +36,7 @@ export default function Auth() {
         </h2>
         <form className="flex flex-col gap-4" onSubmit={handleAuth}>
           <input
-            className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all"
+            className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all"
             type="email"
             placeholder="Your email"
             value={email}
@@ -44,7 +44,7 @@ export default function Auth() {
             onChange={(e) => setEmail(e.target.value)}
           />
           <input
-            className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all"
+            className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all"
             type="password"
             placeholder="Your password"
             value={password}
@@ -52,7 +52,7 @@ export default function Auth() {
             onChange={(e) => setPassword(e.target.value)}
           />
           <button
-            className="w-full px-4 py-3 rounded-lg font-bold text-white bg-gradient-to-r from-teal-500 to-blue-500 hover:from-teal-600 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transform transition-all active:scale-95 disabled:opacity-50"
+            className="w-full px-4 py-3 rounded-lg font-bold text-white bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transform transition-all active:scale-95 disabled:opacity-50"
             disabled={loading}
           >
             {loading ? 'Processing...' : isLogin ? 'Sign In' : 'Sign Up'}
@@ -61,7 +61,7 @@ export default function Auth() {
         <div className="mt-6 text-sm text-gray-500">
           {isLogin ? "Don't have an account?" : "Already have an account?"}{' '}
           <button
-            className="font-semibold text-teal-600 hover:text-teal-500 underline decoration-2 decoration-transparent hover:decoration-teal-500 transition-all"
+            className="font-semibold text-orange-600 hover:text-orange-500 underline decoration-2 decoration-transparent hover:decoration-orange-500 transition-all"
             onClick={() => setIsLogin(!isLogin)}
           >
             {isLogin ? 'Sign Up' : 'Sign In'}

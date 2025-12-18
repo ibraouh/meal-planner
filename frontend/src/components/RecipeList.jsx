@@ -71,7 +71,7 @@ export default function RecipeList() {
              <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
              <input 
                 placeholder="Search recipes..." 
-                className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all"
+                className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
              />
@@ -84,7 +84,7 @@ export default function RecipeList() {
                     onClick={() => setCategory(cat)}
                     className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
                         category === cat 
-                        ? 'bg-teal-500 text-white shadow-md' 
+                        ? 'bg-orange-500 text-white shadow-md' 
                         : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                     }`}
                  >
@@ -98,7 +98,7 @@ export default function RecipeList() {
                   <select 
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="w-full pl-4 pr-8 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 appearance-none cursor-pointer text-sm"
+                    className="w-full pl-4 pr-8 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 appearance-none cursor-pointer text-sm"
                   >
                       {SORT_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                   </select>
@@ -129,7 +129,7 @@ export default function RecipeList() {
             </div>
             
             <div className="p-5 flex-1 flex flex-col">
-                <h3 className="font-bold text-lg text-gray-800 mb-2 line-clamp-1 group-hover:text-teal-600 transition-colors">{recipe.name}</h3>
+                <h3 className="font-bold text-lg text-gray-800 mb-2 line-clamp-1 group-hover:text-orange-600 transition-colors">{recipe.name}</h3>
                 <p className="text-gray-500 text-sm line-clamp-2 mb-4 flex-1">{recipe.description}</p>
                 
                 <div className="flex items-center justify-between pt-4 border-t border-gray-100 text-xs text-gray-500">

@@ -61,7 +61,7 @@ export default function RecipeModal({ recipe, onClose, onUpdate, onDelete }) {
           </div>
           
           <div className="flex gap-2 mb-6">
-            <span className="px-3 py-1 bg-teal-100 text-teal-800 rounded-full text-sm font-medium">
+            <span className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm font-medium">
               {recipe.category}
             </span>
             <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium flex items-center gap-1">
