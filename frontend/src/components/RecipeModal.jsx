@@ -31,8 +31,8 @@ export default function RecipeModal({ recipe, onClose, onUpdate, onDelete }) {
 
   if (isEditing) {
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-           <div className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl p-4 md:p-6">
+        <div className="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-80 flex items-center justify-center p-4 z-50">
+           <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl p-4 md:p-6 text-gray-800 dark:text-gray-100">
                 <RecipeForm 
                     initialData={recipe} 
                     onCancel={() => setIsEditing(false)}
@@ -44,71 +44,71 @@ export default function RecipeModal({ recipe, onClose, onUpdate, onDelete }) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+    <div className="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-80 flex items-center justify-center p-4 z-50">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl">
         {recipe.image_url && (
           <img src={recipe.image_url} alt={recipe.name} className="w-full h-56 object-cover" />
         )}
         <div className="p-6">
           <div className="flex justify-between items-start mb-4">
-            <h3 className="text-2xl font-bold text-gray-800">{recipe.name}</h3>
+             <h3 className="text-2xl font-bold text-gray-800 dark:text-gray-100">{recipe.name}</h3>
             <button 
               onClick={onClose}
-              className="text-gray-500 hover:text-gray-800 bg-gray-100 p-2 rounded-full transition-colors"
+              className="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 bg-gray-100 dark:bg-gray-700 p-2 rounded-full transition-colors"
             >
               <X size={20} />
             </button>
           </div>
           
           <div className="flex gap-2 mb-6">
-            <span className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm font-medium">
+            <span className="px-3 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-200 rounded-full text-sm font-medium">
               {recipe.category}
             </span>
-            <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium flex items-center gap-1">
+            <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 rounded-full text-sm font-medium flex items-center gap-1">
               <Flame size={14} /> {recipe.calories_per_serving} kcal
             </span>
           </div>
 
           <div className="space-y-4">
             <div>
-              <h4 className="font-bold text-gray-700 mb-1">Description</h4>
-              <p className="text-gray-600">{recipe.description}</p>
+              <h4 className="font-bold text-gray-700 dark:text-gray-300 mb-1">Description</h4>
+              <p className="text-gray-600 dark:text-gray-400">{recipe.description}</p>
             </div>
             
-            <div className="grid grid-cols-3 gap-4 text-center bg-gray-50 p-4 rounded-xl">
+            <div className="grid grid-cols-3 gap-4 text-center bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl">
               <div>
-                <div className="text-lg font-bold text-gray-800">{recipe.protein_g}g</div>
-                <div className="text-xs text-gray-500">Protein</div>
+                <div className="text-lg font-bold text-gray-800 dark:text-gray-100">{recipe.protein_g}g</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">Protein</div>
               </div>
               <div>
-                <div className="text-lg font-bold text-gray-800">{recipe.carbs_g}g</div>
-                <div className="text-xs text-gray-500">Carbs</div>
+                <div className="text-lg font-bold text-gray-800 dark:text-gray-100">{recipe.carbs_g}g</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">Carbs</div>
               </div>
               <div>
-                <div className="text-lg font-bold text-gray-800">{recipe.fat_g}g</div>
-                <div className="text-xs text-gray-500">Fat</div>
+                <div className="text-lg font-bold text-gray-800 dark:text-gray-100">{recipe.fat_g}g</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">Fat</div>
               </div>
             </div>
 
             <div>
-              <h4 className="font-bold text-gray-700 mb-2">Instructions</h4>
-              <p className="text-gray-600 whitespace-pre-wrap">{recipe.instructions}</p>
+              <h4 className="font-bold text-gray-700 dark:text-gray-300 mb-2">Instructions</h4>
+              <p className="text-gray-600 dark:text-gray-400 whitespace-pre-wrap">{recipe.instructions}</p>
             </div>
           </div>
         </div>
         
         {/* Actions Footer */}
-        <div className="p-4 border-t border-gray-100 bg-gray-50 flex gap-3">
+        <div className="p-4 border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 flex gap-3">
           <button 
              onClick={() => setIsEditing(true)}
-             className="flex-1 py-3 rounded-xl bg-blue-100 text-blue-700 font-bold hover:bg-blue-200 transition-colors flex items-center justify-center gap-2"
+             className="flex-1 py-3 rounded-xl bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 font-bold hover:bg-blue-200 dark:hover:bg-blue-900/60 transition-colors flex items-center justify-center gap-2"
           >
              <Pencil size={18} /> Edit
           </button>
           <button 
              onClick={handleDelete}
              disabled={loading}
-             className="flex-1 py-3 rounded-xl bg-red-100 text-red-700 font-bold hover:bg-red-200 transition-colors flex items-center justify-center gap-2"
+             className="flex-1 py-3 rounded-xl bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 font-bold hover:bg-red-200 dark:hover:bg-red-900/60 transition-colors flex items-center justify-center gap-2"
           >
              <Trash2 size={18} /> Delete
           </button>

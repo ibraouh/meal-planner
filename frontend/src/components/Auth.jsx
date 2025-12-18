@@ -30,13 +30,13 @@ export default function Auth() {
       <h1 className="text-4xl font-extrabold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-500">
         Meal Planner
       </h1>
-      <div className="w-full max-w-sm p-8 bg-white rounded-2xl shadow-xl border border-gray-100">
-        <h2 className="text-2xl font-bold mb-6 text-gray-800">
+      <div className="w-full max-w-sm p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700">
+        <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100">
           {isLogin ? 'Welcome Back' : 'Create Account'}
         </h2>
         <form className="flex flex-col gap-4" onSubmit={handleAuth}>
           <input
-            className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all"
+            className="w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-800 dark:text-gray-100 placeholder-gray-400 transition-all"
             type="email"
             placeholder="Your email"
             value={email}
@@ -44,7 +44,7 @@ export default function Auth() {
             onChange={(e) => setEmail(e.target.value)}
           />
           <input
-            className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all"
+            className="w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-800 dark:text-gray-100 placeholder-gray-400 transition-all"
             type="password"
             placeholder="Your password"
             value={password}
@@ -58,7 +58,7 @@ export default function Auth() {
             {loading ? 'Processing...' : isLogin ? 'Sign In' : 'Sign Up'}
           </button>
         </form>
-        <div className="mt-6 text-sm text-gray-500">
+        <div className="mt-6 text-sm text-gray-500 dark:text-gray-400">
           {isLogin ? "Don't have an account?" : "Already have an account?"}{' '}
           <button
             className="font-semibold text-orange-600 hover:text-orange-500 underline decoration-2 decoration-transparent hover:decoration-orange-500 transition-all"

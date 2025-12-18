@@ -66,12 +66,12 @@ export default function RecipeList() {
   return (
     <div className="space-y-6">
       {/* Controls: Search, Filter, Sort */}
-      <div className="flex flex-col md:flex-row gap-4 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+      <div className="flex flex-col md:flex-row gap-4 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
           <div className="flex-1 relative">
              <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
              <input 
                 placeholder="Search recipes..." 
-                className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all"
+                className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-800 dark:text-gray-100 placeholder-gray-400 transition-all"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
              />
@@ -85,7 +85,7 @@ export default function RecipeList() {
                     className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
                         category === cat 
                         ? 'bg-orange-500 text-white shadow-md' 
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
                     }`}
                  >
                     {cat}
@@ -98,7 +98,7 @@ export default function RecipeList() {
                   <select 
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="w-full pl-4 pr-8 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 appearance-none cursor-pointer text-sm"
+                    className="w-full pl-4 pr-8 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 appearance-none cursor-pointer text-sm text-gray-800 dark:text-gray-100 transition-all"
                   >
                       {SORT_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                   </select>
@@ -113,32 +113,32 @@ export default function RecipeList() {
           <div 
             key={recipe.id} 
             onClick={() => setSelectedRecipe(recipe)}
-            className="group bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col h-full"
+            className="group bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col h-full"
           >
-            <div className="relative h-48 overflow-hidden bg-gray-100">
+            <div className="relative h-48 overflow-hidden bg-gray-100 dark:bg-gray-700">
                 {recipe.image_url ? (
                     <img src={recipe.image_url} alt={recipe.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-300">
+                    <div className="w-full h-full flex items-center justify-center text-gray-300 dark:text-gray-600">
                         <ChefHat size={48} />
                     </div>
                 )}
-                <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg text-xs font-bold text-gray-700 shadow-sm">
+                <div className="absolute top-3 right-3 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm px-2 py-1 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-200 shadow-sm">
                     {recipe.category}
                 </div>
             </div>
             
             <div className="p-5 flex-1 flex flex-col">
-                <h3 className="font-bold text-lg text-gray-800 mb-2 line-clamp-1 group-hover:text-orange-600 transition-colors">{recipe.name}</h3>
-                <p className="text-gray-500 text-sm line-clamp-2 mb-4 flex-1">{recipe.description}</p>
+                <h3 className="font-bold text-lg text-gray-800 dark:text-gray-100 mb-2 line-clamp-1 group-hover:text-orange-600 transition-colors">{recipe.name}</h3>
+                <p className="text-gray-500 dark:text-gray-400 text-sm line-clamp-2 mb-4 flex-1">{recipe.description}</p>
                 
-                <div className="flex items-center justify-between pt-4 border-t border-gray-100 text-xs text-gray-500">
+                <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400">
                     <div className="flex items-center gap-1">
                         <Flame size={14} className="text-orange-400" />
                         <span>{recipe.calories_per_serving} kcal</span>
                     </div>
                     {recipe.protein_g > 0 && (
-                        <div className="font-medium text-blue-500 bg-blue-50 px-2 py-0.5 rounded-md">
+                        <div className="font-medium text-blue-500 bg-blue-50 dark:bg-blue-900/20 px-2 py-0.5 rounded-md">
                             {recipe.protein_g}g Pro
                         </div>
                     )}
@@ -148,12 +148,12 @@ export default function RecipeList() {
         ))}
         
         {filteredRecipes.length === 0 && (
-            <div className="col-span-full text-center py-12 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
-                <div className="inline-block p-4 bg-white rounded-full shadow-sm mb-3">
-                    <Search className="text-gray-300" size={24} />
+            <div className="col-span-full text-center py-12 bg-gray-50 dark:bg-gray-800 rounded-2xl border border-dashed border-gray-200 dark:border-gray-700 transition-colors">
+                <div className="inline-block p-4 bg-white dark:bg-gray-700 rounded-full shadow-sm mb-3">
+                    <Search className="text-gray-300 dark:text-gray-500" size={24} />
                 </div>
-                <h3 className="text-gray-500 font-medium">No recipes found</h3>
-                <p className="text-gray-400 text-sm">Try adjusting your filters or search terms.</p>
+                <h3 className="text-gray-500 dark:text-gray-400 font-medium">No recipes found</h3>
+                <p className="text-gray-400 dark:text-gray-500 text-sm">Try adjusting your filters or search terms.</p>
             </div>
         )}
       </div>

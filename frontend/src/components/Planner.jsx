@@ -14,6 +14,8 @@ export default function Planner() {
   // Modal State
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [selectedSlot, setSelectedSlot] = useState(null) // { dateStr, mealType }
+  
+  // Dark mode safe nutrition calc
   const [selectedRecipeForView, setSelectedRecipeForView] = useState(null)
 
   const startOfCurrentWeek = startOfWeek(currentDate, { weekStartsOn: 0 })
@@ -89,10 +91,10 @@ export default function Planner() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm">
-        <button onClick={() => setCurrentDate(addDays(currentDate, -7))} className="p-2 hover:bg-gray-100 rounded-full text-gray-600"><ChevronLeft /></button>
-        <h2 className="text-xl font-bold text-gray-800">Week of {format(weekDates[0], 'MMM d')}</h2>
-        <button onClick={() => setCurrentDate(addDays(currentDate, 7))} className="p-2 hover:bg-gray-100 rounded-full text-gray-600"><ChevronRight /></button>
+      <div className="flex justify-between items-center bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-transparent dark:border-gray-700 transition-colors">
+        <button onClick={() => setCurrentDate(addDays(currentDate, -7))} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full text-gray-600 dark:text-gray-300"><ChevronLeft /></button>
+        <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">Week of {format(weekDates[0], 'MMM d')}</h2>
+        <button onClick={() => setCurrentDate(addDays(currentDate, 7))} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full text-gray-600 dark:text-gray-300"><ChevronRight /></button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
@@ -102,10 +104,10 @@ export default function Planner() {
             const nutrition = getDailyNutrition(dateStr)
 
             return (
-                <div key={dateStr} className={`bg-white rounded-xl shadow-sm border ${isToday ? 'border-orange-500 ring-1 ring-orange-500' : 'border-gray-100'} overflow-hidden flex flex-col`}>
-                    <div className="p-3 bg-gray-50 border-b border-gray-100 text-center">
-                        <div className="font-bold text-gray-700">{format(date, 'EEE')}</div>
-                        <div className="text-xs text-gray-500">{format(date, 'MMM d')}</div>
+                <div key={dateStr} className={`bg-white dark:bg-gray-800 rounded-xl shadow-sm border ${isToday ? 'border-orange-500 ring-1 ring-orange-500' : 'border-gray-100 dark:border-gray-700'} overflow-hidden flex flex-col transition-colors`}>
+                    <div className="p-3 bg-gray-50 dark:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700 text-center">
+                        <div className="font-bold text-gray-700 dark:text-gray-200">{format(date, 'EEE')}</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">{format(date, 'MMM d')}</div>
                     </div>
                     
                     <div className="flex-1 p-2 space-y-2">
@@ -117,14 +119,14 @@ export default function Planner() {
                                     {meal ? (
                                         <div 
                                             onClick={() => setSelectedRecipeForView(recipes.find(r => r.id === meal.recipe.id))}
-                                            className="group relative bg-orange-50 border border-orange-100 p-2 rounded-lg text-sm cursor-pointer hover:bg-orange-100 transition-colors"
+                                            className="group relative bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-900/30 p-2 rounded-lg text-sm cursor-pointer hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors"
                                         >
-                                            <div className="font-medium text-orange-900 line-clamp-2 pr-4">
+                                            <div className="font-medium text-orange-900 dark:text-orange-100 line-clamp-2 pr-4">
                                                 {meal.recipe?.name || 'Unknown Recipe'}
                                             </div>
                                             <button 
                                                 onClick={(e) => handleDeleteMeal(e, meal.id)}
-                                                className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 p-1"
+                                                className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 p-1"
                                             >
                                                 <X size={14} />
                                             </button>
@@ -132,7 +134,7 @@ export default function Planner() {
                                     ) : (
                                         <div 
                                           onClick={() => handleAddMealClick(dateStr, type)}
-                                          className="w-full h-full border-2 border-dashed border-gray-200 rounded-lg flex items-center justify-center text-gray-300 hover:border-orange-300 hover:bg-orange-50 hover:text-orange-400 transition-all cursor-pointer"
+                                          className="w-full h-full border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-lg flex items-center justify-center text-gray-300 dark:text-gray-600 hover:border-orange-300 dark:hover:border-orange-700 hover:bg-orange-50 dark:hover:bg-orange-900/10 hover:text-orange-400 transition-all cursor-pointer"
                                       >
                                           <Plus size={20} strokeWidth={3} />
                                       </div>
@@ -142,7 +144,7 @@ export default function Planner() {
                         })}
                     </div>
 
-                    <div className="p-2 text-xs text-center text-gray-500 border-t border-gray-100">
+                    <div className="p-2 text-xs text-center text-gray-500 dark:text-gray-400 border-t border-gray-100 dark:border-gray-700">
                         <span className="font-bold">{nutrition.cal}</span> cal | <span className="font-bold">{nutrition.pro}g</span> P
                     </div>
                 </div>
@@ -150,24 +152,23 @@ export default function Planner() {
         })}
       </div>
 
-      {/* Add Meal Modal */}
-      {isAddModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-             <div className="bg-white rounded-2xl max-w-md w-full max-h-[80vh] overflow-y-auto shadow-2xl p-6">
-                <h3 className="text-lg font-bold mb-4">Add {selectedSlot?.mealType} for {formatShortDate(new Date(selectedSlot?.dateStr))}</h3>
+       {isAddModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-70 flex items-center justify-center p-4 z-50">
+             <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-md w-full max-h-[80vh] overflow-y-auto shadow-2xl p-6">
+                <h3 className="text-lg font-bold mb-4 dark:text-gray-100">Add {selectedSlot?.mealType} for {formatShortDate(new Date(selectedSlot?.dateStr))}</h3>
                 <div className="space-y-2">
                     {recipes.map(r => (
                         <button 
                             key={r.id} 
                             onClick={() => handleSelectRecipe(r.id)}
-                            className="w-full text-left p-3 hover:bg-gray-50 rounded-lg flex justify-between items-center group"
+                            className="w-full text-left p-3 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg flex justify-between items-center group transition-colors"
                         >
-                            <span className="font-medium text-gray-700">{r.name}</span>
-                            <span className="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded-full group-hover:bg-white">{r.calories_per_serving} cal</span>
+                            <span className="font-medium text-gray-700 dark:text-gray-200">{r.name}</span>
+                            <span className="text-xs text-gray-400 bg-gray-100 dark:bg-gray-700 dark:text-gray-400 px-2 py-1 rounded-full group-hover:bg-white dark:group-hover:bg-gray-600">{r.calories_per_serving} cal</span>
                         </button>
                     ))}
                 </div>
-                <button onClick={() => setIsAddModalOpen(false)} className="mt-4 w-full py-2 bg-gray-100 rounded-lg font-bold text-gray-600">Cancel</button>
+                <button onClick={() => setIsAddModalOpen(false)} className="mt-4 w-full py-2 bg-gray-100 dark:bg-gray-700 rounded-lg font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">Cancel</button>
              </div>
         </div>
       )}
