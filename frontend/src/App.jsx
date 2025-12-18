@@ -75,7 +75,7 @@ function AppContent() {
       </main>
 
       {/* Mobile Bottom Nav */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-3 flex justify-around items-center z-40 md:hidden">
+      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 pt-3 px-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] flex justify-around items-center z-40 md:hidden">
         <button 
           onClick={() => setView('planner')}
           className={`flex flex-col items-center gap-1 w-16 ${view === 'planner' ? 'text-teal-600' : 'text-gray-400'}`}
