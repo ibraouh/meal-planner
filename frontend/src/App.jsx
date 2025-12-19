@@ -6,7 +6,8 @@ import RecipeForm from './components/RecipeForm'
 import RecipeList from './components/RecipeList'
 import Planner from './components/Planner'
 import TodayView from './components/TodayView'
-import { Calendar, Utensils, LogOut, ChefHat, PlusCircle, Settings, Moon, Sun, Smartphone, LayoutDashboard } from 'lucide-react'
+import IngredientsList from './components/IngredientsList'
+import { Calendar, Utensils, LogOut, ChefHat, PlusCircle, Settings, Moon, Sun, Smartphone, LayoutDashboard, Beef } from 'lucide-react'
 
 function SettingsView() {
     const { signOut, user } = useAuth()
@@ -84,8 +85,8 @@ function AppContent() {
       <header className="sticky top-0 z-40 bg-orange-50 dark:bg-gray-900 border-b border-orange-100 dark:border-gray-800 shadow-sm px-4 py-3 mb-6 transition-colors duration-200">
         <div className="max-w-5xl mx-auto flex justify-between items-center">
           <div>
-             <h1 className="text-2xl md:text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-amber-500 flex items-center gap-2">
-              <ChefHat className="text-orange-500" /> Planner
+             <h1 className="text-2xl md:text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-amber-500 flex items-center gap-0">
+              <ChefHat className="text-orange-500" /> <Calendar className="text-orange-500" /> 
             </h1>
           </div>
 
@@ -113,7 +114,15 @@ function AppContent() {
                 >
                     <Utensils size={18} /> <span className="hidden md:inline">Recipes</span>
                 </button>
+
                 <button 
+                    onClick={() => setView('ingredients')}
+                    className={`p-2 md:px-4 md:py-1.5 rounded-md text-sm font-bold transition-all flex items-center gap-2 ${view === 'ingredients' ? 'bg-white dark:bg-gray-700 text-orange-600 dark:text-orange-400 shadow-sm' : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'}`}
+                    title="Ingredients"
+                >
+                    <Beef size={18} /> <span className="hidden md:inline">Ingredients</span>
+                </button>
+                                <button 
                     onClick={() => setView('new-recipe')}
                     className={`p-2 md:px-4 md:py-1.5 rounded-md text-sm font-bold transition-all flex items-center gap-2 ${view === 'new-recipe' ? 'bg-white dark:bg-gray-700 text-orange-600 dark:text-orange-400 shadow-sm' : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'}`}
                     title="New Recipe"
@@ -135,6 +144,8 @@ function AppContent() {
       <main className="max-w-5xl mx-auto px-4 space-y-8">
         {view === 'today' && <TodayView />}
         {view === 'planner' && <Planner />}
+        
+        {view === 'ingredients' && <IngredientsList />}
         
         {view === 'recipes' && (
             <section>

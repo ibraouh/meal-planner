@@ -44,20 +44,21 @@ export default function RecipeModal({ recipe, onClose, onUpdate, onDelete }) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-80 flex items-center justify-center p-4 z-50">
-      <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+    <div className="fixed inset-0 bg-black/30 dark:bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl relative">
+        <button 
+          onClick={onClose}
+          className="absolute top-4 right-4 z-10 text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 bg-white/80 dark:bg-gray-900/50 backdrop-blur-md p-2 rounded-full transition-colors shadow-sm hover:bg-white dark:hover:bg-gray-800"
+        >
+          <X size={20} />
+        </button>
         {recipe.image_url && (
           <img src={recipe.image_url} alt={recipe.name} className="w-full h-56 object-cover" />
         )}
         <div className="p-6">
           <div className="flex justify-between items-start mb-4">
              <h3 className="text-2xl font-bold text-gray-800 dark:text-gray-100">{recipe.name}</h3>
-            <button 
-              onClick={onClose}
-              className="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 bg-gray-100 dark:bg-gray-700 p-2 rounded-full transition-colors"
-            >
-              <X size={20} />
-            </button>
+
           </div>
           
           <div className="flex gap-2 mb-6">
@@ -67,6 +68,9 @@ export default function RecipeModal({ recipe, onClose, onUpdate, onDelete }) {
             <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 rounded-full text-sm font-medium flex items-center gap-1">
               <Flame size={14} /> {recipe.calories_per_serving} kcal
             </span>
+             <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 rounded-full text-sm font-medium">
+              {recipe.protein_g}g Protein
+            </span>
           </div>
 
           <div className="space-y-4">
@@ -75,12 +79,7 @@ export default function RecipeModal({ recipe, onClose, onUpdate, onDelete }) {
               <p className="text-gray-600 dark:text-gray-400">{recipe.description}</p>
             </div>
             
-            <div className="grid grid-cols-1 gap-4 text-center bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl">
-              <div>
-                <div className="text-lg font-bold text-gray-800 dark:text-gray-100">{recipe.protein_g}g</div>
-                <div className="text-xs text-gray-500 dark:text-gray-400">Protein</div>
-              </div>
-            </div>
+
 
             {recipe.ingredients && recipe.ingredients.length > 0 && (
                 <div>

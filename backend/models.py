@@ -16,6 +16,7 @@ class RecipeBase(BaseModel):
     description: Optional[str] = None
     image_url: Optional[str] = None
     category: Category
+    calories_per_serving: Optional[int] = 0
     protein_g: Optional[float] = 0.0
     
 class IngredientBase(BaseModel):
