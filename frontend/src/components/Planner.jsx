@@ -91,7 +91,7 @@ export default function Planner() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-transparent dark:border-gray-700 transition-colors">
+      <div className="flex justify-between items-center bg-white dark:bg-gray-800 p-1 rounded-xl shadow-sm border border-transparent dark:border-gray-700 transition-colors">
         <button onClick={() => setCurrentDate(addDays(currentDate, -7))} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full text-gray-600 dark:text-gray-300"><ChevronLeft /></button>
         <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">Week of {format(weekDates[0], 'MMM d')}</h2>
         <button onClick={() => setCurrentDate(addDays(currentDate, 7))} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full text-gray-600 dark:text-gray-300"><ChevronRight /></button>

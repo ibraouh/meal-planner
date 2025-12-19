@@ -46,9 +46,81 @@ def get_recipes(current_user: dict = Depends(get_current_user), category: Option
         
     return recipes
 
+@router.get("/ingredients")
+def get_all_ingredients():
+    try:
+        res = supabase.table("ingredients").select("*").order("name").execute()
+        return res.data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @router.get("/ingredients/search")
 def search_ingredients(q: str):
-    return search_food(q)
+    # 1. Search Local DB
+    local_results = []
+    try:
+        # Using Supabase 'ilike' for partial case-insensitive match
+        res = supabase.table("ingredients").select("*").ilike("name", f"%{q}%").limit(10).execute()
+        if res.data:
+            local_results = res.data
+    except Exception as e:
+        print(f"Local search error: {e}")
+        
+    # 2. Search External API (Spoonacular)
+    api_results = search_food(q)
+    
+    # 3. Merge and Dedup
+    # Priority: Local DB results (they might have custom user edits or be cached)
+    # Strategy: 
+    # - Start with local.
+    # - Add api result if not already in local (check by api_id or name).
+    
+    final_list = []
+    seen_ids = set() # track api_id
+    seen_names = set() # track lower-case names
+    
+    # Process Local
+    for item in local_results:
+        # Local items have uuid 'id', and optional 'api_id'
+        # Convert to display format expected by frontend
+        # Frontend expects: api_id (can be uuid if local-only), name, calories_per_g, etc.
+        
+        # Use api_id if present, else use DB id as the unique key
+        uid = item.get('api_id') or str(item['id'])
+        
+        if uid in seen_ids:
+            continue
+        if item['name'].lower() in seen_names:
+            continue
+            
+        final_list.append({
+            "api_id": uid, # Frontend uses this as key
+            "name": item['name'],
+            "calories_per_g": item['calories_per_g'],
+            "protein_per_g": item['protein_per_g'],
+            "image_url": item.get('image_url')
+        })
+        
+        if item.get('api_id'):
+            seen_ids.add(str(item['api_id']))
+        seen_names.add(item['name'].lower())
+        
+    # Process API
+    for item in api_results:
+        # API items have 'api_id', 'name'
+        uid = str(item['api_id'])
+        name = item['name'].lower()
+        
+        if uid in seen_ids:
+            continue
+        if name in seen_names:
+            continue
+            
+        final_list.append(item)
+        seen_ids.add(uid)
+        seen_names.add(name)
+        
+    return final_list
 
 @router.post("/", response_model=Recipe)
 def create_recipe(recipe: RecipeCreate, current_user: dict = Depends(get_current_user), authorization: str = Header(None)):
@@ -124,8 +196,7 @@ def create_recipe(recipe: RecipeCreate, current_user: dict = Depends(get_current
 @router.put("/{recipe_id}", response_model=Recipe)
 def update_recipe(recipe_id: UUID, recipe: RecipeCreate, current_user: dict = Depends(get_current_user), authorization: str = Header(None)):
     data = recipe.dict()
-    # Don't update user_id, ensure it stays consistent
-    # data['user_id'] = current_user.id 
+    ingredients = data.pop('ingredients', [])
     
     query = supabase.table("recipes")
     query.headers = {**query.headers, "authorization": authorization}
@@ -135,6 +206,89 @@ def update_recipe(recipe_id: UUID, recipe: RecipeCreate, current_user: dict = De
     
     if not response.data:
          raise HTTPException(status_code=404, detail="Recipe not found or not owned by user")
+         
+    # Handle Ingredients Update
+    if ingredients is not None:
+        # Delete existing
+        try:
+            ri_table = supabase.table("recipe_ingredients")
+            ri_table.headers = {**ri_table.headers, "authorization": authorization}
+            ri_table.delete().eq("recipe_id", str(recipe_id)).execute()
+            
+            # Insert new
+            ing_table = supabase.table("ingredients")
+            ing_table.headers = {**ing_table.headers, "authorization": authorization}
+            
+            for ing in ingredients:
+                ing_data = {
+                    "name": ing['name'],
+                    "calories_per_g": ing['calories_per_g'],
+                    "protein_per_g": ing['protein_per_g'],
+                    "image_url": ing.get('image_url')
+                }
+                
+                # Check exist
+                # If we have api_id, better to assume uniqueness on it? Or just name?
+                # Using name for simplicity here if api_id is purely informational or missing
+                # Actually, duplicate ingredients in DB is fine if we want per-recipe customization? 
+                # But we setup 'ingredients' table as a shared cache.
+                # Let's try to find by api_id or name.
+                
+                # For `update`, logic matches `create`.
+                existing = None
+                if ing.get('api_id'):
+                    res = ing_table.select("id").eq("api_id", ing['api_id']).execute()
+                    if res.data:
+                        existing = res.data[0]
+                
+                if not existing:
+                     # fallback search by name?
+                    res_name = ing_table.select("id").eq("name", ing['name']).execute()
+                    if res_name.data:
+                        existing = res_name.data[0]
+
+                if existing:
+                    ing_id = existing['id']
+                else:
+                    ing_insert = {**ing_data, "api_id": ing.get('api_id')}
+                    res_new = ing_table.insert(ing_insert).execute()
+                    ing_id = res_new.data[0]['id']
+                
+                ri_data = {
+                    "recipe_id": str(recipe_id),
+                    "ingredient_id": ing_id,
+                    "amount_g": ing['amount_g']
+                }
+                ri_table.insert(ri_data).execute()
+                
+        except Exception as e:
+            print(f"Error updating ingredients: {e}")
+            # Non-critical? Or should we rollback? Supabase doesn't support easy transactions via REST.
+            # Logging error.
+
+    # Re-fetch full recipe with ingredients to return correct model
+    # Or just construct it.
+    # Let's fetch to be safe.
+    final_res = query.select("*, recipe_ingredients(amount_g, ingredients(*))").eq("id", str(recipe_id)).execute()
+    if final_res.data:
+        # Flatten for Pydantic
+        r = final_res.data[0]
+        flattened_ingredients = []
+        if r.get('recipe_ingredients'):
+            for ri in r['recipe_ingredients']:
+                i = ri['ingredients']
+                if i:
+                    flattened_ingredients.append({
+                        "id": i['id'],
+                        "api_id": i.get('api_id'),
+                        "name": i['name'],
+                        "amount_g": ri['amount_g'],
+                        "calories_per_g": i['calories_per_g'],
+                        "protein_per_g": i['protein_per_g'],
+                        "image_url": i.get('image_url')
+                    })
+        r['ingredients'] = flattened_ingredients
+        return r
          
     return response.data[0]
 

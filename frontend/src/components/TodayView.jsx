@@ -11,6 +11,16 @@ export default function TodayView() {
     const today = new Date()
     const dateStr = format(today, 'yyyy-MM-dd')
     const [selectedRecipe, setSelectedRecipe] = useState(null)
+    const [expandedMealId, setExpandedMealId] = useState(null)
+
+    const toggleExpand = (mealId) => {
+        setExpandedMealId(prev => prev === mealId ? null : mealId)
+    }
+
+    const openModal = (e, recipe) => {
+        e.stopPropagation()
+        setSelectedRecipe(recipe)
+    }
 
     // Fetch *only* today's meals? Or reusing the week query is better for cache?
     // Let's reuse the week query pattern for consistency, but maybe narrow range if needed?
@@ -107,29 +117,63 @@ export default function TodayView() {
                                 {slotMeals.map(meal => (
                                     <div 
                                         key={meal.id}
-                                        onClick={() => setSelectedRecipe(meal.recipe)}
-                                        className="bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md hover:border-orange-200 dark:hover:border-orange-900 transition-all cursor-pointer group flex items-center justify-between"
+                                        onClick={() => toggleExpand(meal.id)}
+                                        className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all cursor-pointer group overflow-hidden"
                                     >
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-12 h-12 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400 group-hover:bg-orange-500 group-hover:text-white transition-colors">
+                                        <div className="p-4 flex items-center justify-between">
+                                            <div className="flex items-center gap-4">
+                                                <div 
+                                                onClick={(e) => openModal(e, meal.recipe)}
+                                                className="w-12 h-12 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400 group-hover:bg-orange-500 group-hover:text-white transition-colors flex-shrink-0 cursor-pointer hover:opacity-80"
+                                            >
                                                 {meal.recipe?.image_url ? (
                                                      <img src={meal.recipe.image_url} alt="" className="w-full h-full object-cover rounded-lg" />
                                                 ) : <Utensils size={20} />}
                                             </div>
-                                            <div>
-                                                <div className="font-bold text-gray-800 dark:text-gray-100 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
-                                                    {meal.recipe?.name}
-                                                </div>
-                                                <div className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-2">
-                                                    <span>{meal.recipe?.calories_per_serving} kcal</span>
-                                                    <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
-                                                    <span>{meal.recipe?.protein_g}g pro</span>
+                                                <div>
+                                                    <div className="font-bold text-gray-800 dark:text-gray-100 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+                                                        {meal.recipe?.name}
+                                                    </div>
+                                                    <div className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-2">
+                                                        <span>{meal.recipe?.calories_per_serving} kcal</span>
+                                                        <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
+                                                        <span>{meal.recipe?.protein_g}g pro</span>
+                                                    </div>
                                                 </div>
                                             </div>
+                                            <button 
+                                                onClick={(e) => openModal(e, meal.recipe)}
+                                                className="p-2 text-gray-300 hover:text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20 rounded-full transition-all"
+                                            >
+                                                <ChevronRight size={20} />
+                                            </button>
                                         </div>
-                                        <div className="text-gray-300 group-hover:text-orange-500 group-hover:translate-x-1 transition-all">
-                                            <ChevronRight size={20} />
-                                        </div>
+                                        
+                                        {/* Expanded Ingredients */}
+                                        {expandedMealId === meal.id && (
+                                            <div className="bg-orange-50/50 dark:bg-gray-700/30 border-t border-gray-100 dark:border-gray-700 p-4 animate-slide-down cursor-default" onClick={e => e.stopPropagation()}>
+                                                <div className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-2 tracking-wider">Ingredients</div>
+                                                
+                                                {meal.recipe?.ingredients && meal.recipe.ingredients.length > 0 ? (
+                                                    <div className="space-y-2">
+                                                        {meal.recipe.ingredients.map((ing, i) => (
+                                                            <div key={i} className="flex items-center justify-between text-sm">
+                                                                <div className="flex items-center gap-2">
+                                                                    <div className="w-1 h-1 bg-orange-400 rounded-full"></div>
+                                                                    <span className="text-gray-700 dark:text-gray-200 font-medium">{ing.name}</span>
+                                                                </div>
+                                                                <div className="flex items-center gap-3 text-xs">
+                                                                    <span className="text-gray-500">{ing.amount_g}g</span>
+                                                                    <span className="font-mono text-gray-400">{Math.round((ing.calories_per_g || 0) * (ing.amount_g || 0))} kcal</span>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                ) : (
+                                                    <div className="text-sm text-gray-400 italic">No ingredients added yet.</div>
+                                                )}
+                                            </div>
+                                        )}
                                     </div>
                                 ))}
                             </div>

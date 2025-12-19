@@ -327,7 +327,7 @@ export default function RecipeForm({ onRecipeCreated, initialData = null, onCanc
                         <input 
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            placeholder="Search ingredients (e.g. Chicken)..."
+                            placeholder="Search ingredients"
                             className="w-full pl-10 pr-4 py-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 text-base focus:ring-2 focus:ring-orange-500 shadow-sm"
                         />
                         <Search className="absolute left-3 top-3.5 text-gray-400" size={18} />
