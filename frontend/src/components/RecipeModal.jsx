@@ -82,10 +82,24 @@ export default function RecipeModal({ recipe, onClose, onUpdate, onDelete }) {
               </div>
             </div>
 
-            <div>
-              <h4 className="font-bold text-gray-700 dark:text-gray-300 mb-2">Instructions</h4>
-              <p className="text-gray-600 dark:text-gray-400 whitespace-pre-wrap">{recipe.instructions}</p>
-            </div>
+            {recipe.ingredients && recipe.ingredients.length > 0 && (
+                <div>
+                   <h4 className="font-bold text-gray-700 dark:text-gray-300 mb-2">Ingredients</h4>
+                   <ul className="space-y-2">
+                       {recipe.ingredients.map((ing, i) => (
+                           <li key={i} className="flex justify-between items-center text-sm p-2 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-100 dark:border-gray-600">
+                               <div className="flex items-center gap-2">
+                                   {ing.image_url && <img src={ing.image_url} className="w-6 h-6 rounded-full object-cover" />}
+                                   <span className="text-gray-800 dark:text-gray-200 font-medium">{ing.name}</span>
+                               </div>
+                               <span className="text-gray-500 dark:text-gray-400 font-mono text-xs">{ing.amount_g}g</span>
+                           </li>
+                       ))}
+                   </ul>
+                </div>
+            )}
+
+
           </div>
         </div>
         
