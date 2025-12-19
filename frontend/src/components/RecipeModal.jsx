@@ -75,18 +75,10 @@ export default function RecipeModal({ recipe, onClose, onUpdate, onDelete }) {
               <p className="text-gray-600 dark:text-gray-400">{recipe.description}</p>
             </div>
             
-            <div className="grid grid-cols-3 gap-4 text-center bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl">
+            <div className="grid grid-cols-1 gap-4 text-center bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl">
               <div>
                 <div className="text-lg font-bold text-gray-800 dark:text-gray-100">{recipe.protein_g}g</div>
                 <div className="text-xs text-gray-500 dark:text-gray-400">Protein</div>
-              </div>
-              <div>
-                <div className="text-lg font-bold text-gray-800 dark:text-gray-100">{recipe.carbs_g}g</div>
-                <div className="text-xs text-gray-500 dark:text-gray-400">Carbs</div>
-              </div>
-              <div>
-                <div className="text-lg font-bold text-gray-800 dark:text-gray-100">{recipe.fat_g}g</div>
-                <div className="text-xs text-gray-500 dark:text-gray-400">Fat</div>
               </div>
             </div>
 

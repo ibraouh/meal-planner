@@ -17,10 +17,9 @@ class RecipeBase(BaseModel):
     instructions: str
     image_url: Optional[str] = None
     category: Category
+    category: Category
     calories_per_serving: Optional[int] = 0
     protein_g: Optional[float] = 0.0
-    carbs_g: Optional[float] = 0.0
-    fat_g: Optional[float] = 0.0
 
 class RecipeCreate(RecipeBase):
     pass

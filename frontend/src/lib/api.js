@@ -16,16 +16,28 @@ export const api = {
   get: async (endpoint) => {
     const headers = await getHeaders()
     const response = await fetch(`${API_URL}${endpoint}`, { headers })
-    if (!response.ok) throw new Error('API Error')
+    if (!response.ok) {
+        const errorText = await response.text()
+        console.error('API Get Error:', response.status, errorText)
+        throw new Error(`API Error: ${response.status} ${errorText}`)
+    }
     return response.json()
   },
   
   post: async (endpoint, body) => {
     const headers = await getHeaders()
+    let requestBody = body
+    
+    if (body instanceof FormData) {
+        delete headers['Content-Type']
+    } else {
+        requestBody = JSON.stringify(body)
+    }
+
     const response = await fetch(`${API_URL}${endpoint}`, {
       method: 'POST',
       headers,
-      body: JSON.stringify(body),
+      body: requestBody,
     })
     if (!response.ok) throw new Error('API Error')
     return response.json()
@@ -33,10 +45,18 @@ export const api = {
 
   put: async (endpoint, body) => {
     const headers = await getHeaders()
+    let requestBody = body
+    
+    if (body instanceof FormData) {
+        delete headers['Content-Type']
+    } else {
+        requestBody = JSON.stringify(body)
+    }
+
     const response = await fetch(`${API_URL}${endpoint}`, {
       method: 'PUT',
       headers,
-      body: JSON.stringify(body),
+      body: requestBody,
     })
     if (!response.ok) throw new Error('API Error')
     return response.json()
