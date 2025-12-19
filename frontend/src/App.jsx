@@ -81,7 +81,7 @@ function AppContent() {
   return (
     <div className="min-h-screen bg-orange-50 dark:bg-gray-900 pb-8 transition-colors duration-200">
       {/* Sticky Header */}
-      <header className="sticky top-0 z-40 bg-orange-50/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-orange-100 dark:border-gray-800 shadow-sm px-4 py-3 mb-6 transition-colors duration-200">
+      <header className="sticky top-0 z-40 bg-orange-50 dark:bg-gray-900 border-b border-orange-100 dark:border-gray-800 shadow-sm px-4 py-3 mb-6 transition-colors duration-200">
         <div className="max-w-5xl mx-auto flex justify-between items-center">
           <div>
              <h1 className="text-2xl md:text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-amber-500 flex items-center gap-2">

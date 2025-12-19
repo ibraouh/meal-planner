@@ -163,11 +163,11 @@ export default function RecipeList() {
                 </button>
             </div>
             
-            <div className="p-5 flex-1 flex flex-col">
-                <h3 className="font-bold text-lg text-gray-800 dark:text-gray-100 mb-2 line-clamp-1 group-hover:text-orange-600 transition-colors">{recipe.name}</h3>
-                <p className="text-gray-500 dark:text-gray-400 text-sm line-clamp-2 mb-4 flex-1">{recipe.description}</p>
-                
-                <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400">
+             <div className="p-3 flex-1 flex flex-col">
+                 <h3 className="font-bold text-sm text-gray-800 dark:text-gray-100 mb-1 line-clamp-1 group-hover:text-orange-600 transition-colors">{recipe.name}</h3>
+                 <p className="text-gray-500 dark:text-gray-400 text-xs line-clamp-2 mb-3 flex-1">{recipe.description}</p>
+                 
+                 <div className="flex items-center justify-between pt-2 border-t border-gray-100 dark:border-gray-700 text-[10px] text-gray-500 dark:text-gray-400 font-medium">
                     <div className="flex items-center gap-1">
                         <Flame size={14} className="text-orange-400" />
                         <span>{recipe.calories_per_serving} kcal</span>
