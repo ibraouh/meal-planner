@@ -1,9 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException, Header
-from typing import List, Optional
+from fastapi import APIRouter, Depends, HTTPException, Header, UploadFile, File
+from typing import List, Optional, Dict, Any
 from uuid import UUID
 from models import Recipe, RecipeCreate
 from auth import get_current_user
 from db import supabase
+from services.cloudinary_service import upload_image
+from services.ai_service import parse_recipe_from_text
+from pydantic import BaseModel
 
 router = APIRouter(prefix="/recipes", tags=["recipes"])
 
@@ -68,3 +71,23 @@ def delete_recipe(recipe_id: UUID, current_user: dict = Depends(get_current_user
     del_query.headers = {**del_query.headers, "authorization": authorization}
     del_query.delete().eq("id", str(recipe_id)).execute()
     return {"message": "Recipe deleted"}
+
+class RecipeParseRequest(BaseModel):
+    text: str
+
+@router.post("/parse")
+def parse_recipe(request: RecipeParseRequest):
+    try:
+        recipe_data = parse_recipe_from_text(request.text)
+        return recipe_data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/upload")
+async def upload_recipe_image(file: UploadFile = File(...)):
+    try:
+        content = await file.read()
+        url = upload_image(content, file.filename)
+        return {"url": url}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

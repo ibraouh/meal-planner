@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { api } from '../lib/api'
-import { ChevronDown, Image, AlignLeft, List, Flame, Activity } from 'lucide-react'
+import { ChevronDown, Image, AlignLeft, List, Flame, Activity, Bot } from 'lucide-react'
 import { useQueryClient } from '@tanstack/react-query'
 
 const CATEGORIES = ['Breakfast', 'Lunch', 'Dinner', 'Snack', 'Other']
@@ -9,11 +9,23 @@ export default function RecipeForm({ onRecipeCreated, initialData = null, onCanc
   const queryClient = useQueryClient()
   const [formData, setFormData] = useState(initialData || {
     name: '',
-// ... (keep state)
-    fat_g: 0,
+    description: '',
+    instructions: '',
+    image_url: '',
+    category: 'Dinner',
+    calories_per_serving: 0,
+    protein_g: 0,
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  
+  // AI Import State
+  const [showAiModal, setShowAiModal] = useState(false)
+  const [aiText, setAiText] = useState('')
+  const [aiLoading, setAiLoading] = useState(false)
+
+  // Image Upload State
+  const [uploadingImage, setUploadingImage] = useState(false)
 
   const handleChange = (e) => {
     // ... (keep logic)
@@ -42,8 +54,6 @@ export default function RecipeForm({ onRecipeCreated, initialData = null, onCanc
             category: 'Dinner',
             calories_per_serving: 0,
             protein_g: 0,
-            carbs_g: 0,
-            fat_g: 0,
           })
       }
       
@@ -57,19 +67,80 @@ export default function RecipeForm({ onRecipeCreated, initialData = null, onCanc
     }
   }
 
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+
+    setUploadingImage(true)
+    const uploadData = new FormData()
+    uploadData.append('file', file)
+
+    try {
+        const res = await api.post('/recipes/upload', uploadData)
+        setFormData(prev => ({ ...prev, image_url: res.url || '' }))
+    } catch (err) {
+        console.error("Upload failed", err)
+        setError("Image upload failed")
+    } finally {
+        setUploadingImage(false)
+    }
+  }
+
+  const handleAiImport = async () => {
+      if (!aiText.trim()) return
+      setAiLoading(true)
+      try {
+          const res = await api.post('/recipes/parse', { text: aiText })
+          const data = res
+          
+          if (!data) throw new Error("No data returned from AI")
+
+          // Merge parsed data into form
+          setFormData(prev => ({
+              ...prev,
+              name: data.name || prev.name,
+              description: data.description || prev.description,
+              category: data.category || prev.category,
+              calories_per_serving: data.calories_per_serving || 0,
+              protein_g: data.protein_g || 0,
+              instructions: data.instructions || prev.instructions,
+              // Keep existing image if not provided (AI usually doesn't give image URL)
+          }))
+          setShowAiModal(false)
+          setAiText('')
+      } catch (err) {
+          console.error("AI Parse failed", err)
+          setError("Failed to import recipe from AI")
+      } finally {
+          setAiLoading(false)
+      }
+  }
+
   return (
+    <>
     <form onSubmit={handleSubmit} className="space-y-6 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
       <div className="flex justify-between items-center pb-4 border-b border-gray-100 dark:border-gray-700">
           <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">{initialData ? 'Edit Recipe' : 'New Recipe'}</h3>
-          {onCancel && (
-              <button 
-                type="button" 
-                onClick={onCancel}
-                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-sm font-medium"
-              >
-                  Cancel
-              </button>
-          )}
+          <div className="flex items-center gap-2">
+            {!initialData && (
+                <button
+                    type="button"
+                    onClick={() => setShowAiModal(true)}
+                    className="p-2 rounded-lg bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/50 transition-colors"
+                >
+                    <Bot size={20} />
+                </button>
+            )}
+            {onCancel && (
+                <button 
+                    type="button" 
+                    onClick={onCancel}
+                    className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-sm font-medium"
+                >
+                    Cancel
+                </button>
+            )}
+          </div>
       </div>
       
       {error && <div className="text-red-500 text-sm">{error}</div>}
@@ -104,14 +175,28 @@ export default function RecipeForm({ onRecipeCreated, initialData = null, onCanc
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-1 flex items-center gap-1"><Image size={14} /> Image URL</label>
-            <input
-                name="image_url"
-                placeholder="https://..."
-                value={formData.image_url}
-                onChange={handleChange}
-                className="w-full px-4 py-2 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-800 dark:text-gray-100 placeholder-gray-400"
-            />
+            <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-1 flex items-center gap-1"><Image size={14} /> Image</label>
+            <div className="space-y-2">
+                <input
+                    name="image_url"
+                    placeholder="https://..."
+                    value={formData.image_url}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-800 dark:text-gray-100 placeholder-gray-400"
+                />
+                <div className="flex items-center gap-2">
+                    <span className="text-xs text-gray-400">OR</span>
+                    <label className="cursor-pointer bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 px-3 py-1.5 rounded-lg text-xs font-bold text-gray-600 dark:text-gray-300 transition-colors flex items-center gap-1">
+                        {uploadingImage ? 'Uploading...' : 'Upload Photo'}
+                        <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} disabled={uploadingImage} />
+                    </label>
+                </div>
+                {formData.image_url && (
+                    <div className="mt-2 h-20 w-32 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-600">
+                        <img src={formData.image_url} alt="Preview" className="h-full w-full object-cover" />
+                    </div>
+                )}
+            </div>
           </div>
           
           <div>
@@ -170,5 +255,43 @@ export default function RecipeForm({ onRecipeCreated, initialData = null, onCanc
         {loading ? 'Saving...' : (initialData ? 'Update Recipe' : 'Save Recipe')}
       </button>
     </form>
+    
+    {/* AI Import Modal */}
+    {showAiModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-lg p-6 shadow-xl border border-orange-100 dark:border-gray-700">
+                <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
+                    ✨ Import Recipe with AI
+                </h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                    Paste a recipe URL, ingredients list, or simple description below. Our AI will format it for you.
+                </p>
+                
+                <textarea
+                    value={aiText}
+                    onChange={(e) => setAiText(e.target.value)}
+                    placeholder="e.g. delicious pancakes with 2 eggs, 1 cup flour, milk..."
+                    className="w-full h-32 p-4 rounded-xl bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 mb-4 text-sm"
+                />
+                
+                <div className="flex justify-end gap-3">
+                    <button
+                        onClick={() => setShowAiModal(false)}
+                        className="px-4 py-2 rounded-lg text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 font-bold text-sm"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        onClick={handleAiImport}
+                        disabled={aiLoading || !aiText.trim()}
+                        className="px-4 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold text-sm hover:shadow-lg disabled:opacity-50"
+                    >
+                        {aiLoading ? 'Magic happening...' : 'Generate Recipe'}
+                    </button>
+                </div>
+            </div>
+        </div>
+    )}
+    </>
   )
 }

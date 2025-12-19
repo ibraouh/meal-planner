@@ -138,7 +138,7 @@ export default function TodayView() {
                 })}
                 
                 {meals.length === 0 && (
-                    <div className="text-center py-12 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-dashed border-gray-200 dark:border-gray-700">
+                    <div className="text-center py-12 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-dashed border-black-200 dark:border-black-700">
                         <p className="text-gray-500 dark:text-gray-400 mb-2">No meals planned for today.</p>
                         <p className="text-sm text-gray-400">Go to Planner to add some!</p>
                     </div>
@@ -156,7 +156,7 @@ export default function TodayView() {
                         const displayDate = dStr === upcomingStart ? tomorrow : dayAfter
                         
                         return (
-                            <div key={dStr} className="bg-gray-50 dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+                            <div key={dStr} className="bg-gray-50 dark:bg-gray-800 rounded-xl p-4 border border-black-100 dark:border-black-700">
                                 <div className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-1">
                                     {format(displayDate, 'EEE, MMM d')}
                                 </div>

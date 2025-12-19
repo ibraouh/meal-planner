@@ -133,48 +133,56 @@ export default function RecipeList() {
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredRecipes.map(recipe => (
           <div 
             key={recipe.id} 
             onClick={() => setSelectedRecipe(recipe)}
-            className="group bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col h-full"
+            className="group bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 cursor-pointer flex flex-row md:flex-col min-h-[6.5rem] md:min-h-0 md:h-full"
           >
-            <div className="relative h-48 overflow-hidden bg-gray-100 dark:bg-gray-700">
+            <div className="relative w-24 md:w-full md:h-32 flex-shrink-0 overflow-hidden bg-gray-100 dark:bg-gray-700">
                 {recipe.image_url ? (
                     <img src={recipe.image_url} alt={recipe.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 ) : (
                     <div className="w-full h-full flex items-center justify-center text-gray-300 dark:text-gray-600">
-                        <ChefHat size={48} />
+                        <ChefHat size={32} />
                     </div>
                 )}
-                <div className="absolute top-3 right-3 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm px-2 py-1 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-200 shadow-sm">
+                {/* Category Badge - Desktop Only */}
+                <div className="hidden md:block absolute top-2 right-2 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm px-1.5 py-0.5 rounded text-[10px] font-bold text-gray-700 dark:text-gray-200 shadow-sm">
                     {recipe.category}
                 </div>
+                
+                {/* Add Button */}
                 <button 
                     onClick={(e) => {
                         e.stopPropagation()
                         setAddingRecipe(recipe)
                     }}
-                    className="absolute top-3 left-3 bg-white/90 dark:bg-gray-800/90 p-1.5 rounded-lg text-gray-400 hover:text-orange-500 hover:bg-white dark:hover:bg-gray-800 transition-colors shadow-sm z-10"
+                    className="absolute bottom-1 right-1 md:top-2 md:left-2 md:right-auto md:bottom-auto bg-white/90 dark:bg-gray-800/90 p-1 rounded-md text-gray-400 hover:text-orange-500 hover:bg-white dark:hover:bg-gray-800 transition-colors shadow-sm z-10"
                     title="Add to Meal Plan"
                 >
-                    <CalendarPlus size={18} />
+                    <CalendarPlus size={14} />
                 </button>
             </div>
             
-             <div className="p-3 flex-1 flex flex-col">
-                 <h3 className="font-bold text-sm text-gray-800 dark:text-gray-100 mb-1 line-clamp-1 group-hover:text-orange-600 transition-colors">{recipe.name}</h3>
-                 <p className="text-gray-500 dark:text-gray-400 text-xs line-clamp-2 mb-3 flex-1">{recipe.description}</p>
+             <div className="p-3 flex-1 flex flex-col justify-center md:justify-start">
+                 <div className="flex justify-between items-start">
+                    <h3 className="font-bold text-sm text-gray-800 dark:text-gray-100 mb-1 line-clamp-1 group-hover:text-orange-600 transition-colors">{recipe.name}</h3>
+                    {/* Category Badge - Mobile Only */}
+                    <span className="md:hidden text-[10px] font-medium text-gray-500 bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded">{recipe.category}</span>
+                 </div>
                  
-                 <div className="flex items-center justify-between pt-2 border-t border-gray-100 dark:border-gray-700 text-[10px] text-gray-500 dark:text-gray-400 font-medium">
+                 <p className="text-gray-500 dark:text-gray-400 text-xs line-clamp-1 md:line-clamp-2 mb-1 md:mb-3 flex-1">{recipe.description}</p>
+                 
+                 <div className="flex items-center gap-3 pt-1 md:pt-2 md:border-t border-gray-100 dark:border-gray-700 text-[10px] text-gray-500 dark:text-gray-400 font-medium">
                     <div className="flex items-center gap-1">
-                        <Flame size={14} className="text-orange-400" />
-                        <span>{recipe.calories_per_serving} kcal</span>
+                        <Flame size={12} className="text-orange-400" />
+                        <span>{recipe.calories_per_serving}</span>
                     </div>
                     {recipe.protein_g > 0 && (
-                        <div className="font-medium text-blue-500 bg-blue-50 dark:bg-blue-900/20 px-2 py-0.5 rounded-md">
-                            {recipe.protein_g}g Pro
+                        <div className="font-medium text-blue-500">
+                            {recipe.protein_g}g P
                         </div>
                     )}
                 </div>
