@@ -5,7 +5,8 @@ import Auth from './components/Auth'
 import RecipeForm from './components/RecipeForm'
 import RecipeList from './components/RecipeList'
 import Planner from './components/Planner'
-import { Calendar, Utensils, LogOut, ChefHat, PlusCircle, Settings, Moon, Sun, Smartphone } from 'lucide-react'
+import TodayView from './components/TodayView'
+import { Calendar, Utensils, LogOut, ChefHat, PlusCircle, Settings, Moon, Sun, Smartphone, LayoutDashboard } from 'lucide-react'
 
 function SettingsView() {
     const { signOut, user } = useAuth()
@@ -66,7 +67,7 @@ function SettingsView() {
 
 function AppContent() {
   const { user } = useAuth()
-  const [view, setView] = useState('planner') // 'planner', 'recipes', 'new-recipe', 'settings'
+  const [view, setView] = useState('today') // 'today', 'planner', 'recipes', 'new-recipe', 'settings'
 
   // Scroll to top when switching views
   useEffect(() => {
@@ -91,6 +92,13 @@ function AppContent() {
           <div className="flex items-center gap-1 md:gap-4">
              {/* Unified Nav */}
              <nav className="flex items-center gap-1 bg-white/50 dark:bg-gray-800 p-1 rounded-lg">
+                <button 
+                    onClick={() => setView('today')}
+                    className={`p-2 md:px-4 md:py-1.5 rounded-md text-sm font-bold transition-all flex items-center gap-2 ${view === 'today' ? 'bg-white dark:bg-gray-700 text-orange-600 dark:text-orange-400 shadow-sm' : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'}`}
+                    title="Today"
+                >
+                    <LayoutDashboard size={18} /> <span className="hidden md:inline">Today</span>
+                </button>
                 <button 
                     onClick={() => setView('planner')}
                     className={`p-2 md:px-4 md:py-1.5 rounded-md text-sm font-bold transition-all flex items-center gap-2 ${view === 'planner' ? 'bg-white dark:bg-gray-700 text-orange-600 dark:text-orange-400 shadow-sm' : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'}`}
@@ -125,6 +133,7 @@ function AppContent() {
       </header>
 
       <main className="max-w-5xl mx-auto px-4 space-y-8">
+        {view === 'today' && <TodayView />}
         {view === 'planner' && <Planner />}
         
         {view === 'recipes' && (

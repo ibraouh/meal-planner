@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { api } from '../lib/api'
 import RecipeModal from './RecipeModal'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { Search, Utensils, Clock, Flame, ChefHat, Filter } from 'lucide-react'
+import { Search, Utensils, Clock, Flame, ChefHat, Filter, CalendarPlus, X } from 'lucide-react'
+import { format } from 'date-fns'
 
 // Categories for filter
 const CATEGORIES = ['All', 'Breakfast', 'Lunch', 'Dinner', 'Snack', 'Other']
@@ -23,6 +24,11 @@ export default function RecipeList() {
   const [category, setCategory] = useState('All')
   const [sortBy, setSortBy] = useState('usage_count')
   const [searchQuery, setSearchQuery] = useState('')
+
+  // Add to Meal State
+  const [addingRecipe, setAddingRecipe] = useState(null)
+  const [targetDate, setTargetDate] = useState(format(new Date(), 'yyyy-MM-dd'))
+  const [targetMealType, setTargetMealType] = useState('Breakfast')
 
   // 1. Fetch Recipes with Caching
   const { data: recipes = [], isLoading, error } = useQuery({
@@ -52,6 +58,25 @@ export default function RecipeList() {
         queryClient.setQueryData(['recipes'], (old) => old.filter(r => r.id !== id))
         // also invalidate to be safe
         queryClient.invalidateQueries(['recipes'])
+  }
+
+  const handleAddToPlan = async () => {
+    if (!addingRecipe) return
+    try {
+        await api.post('/meal-plans/', {
+            date: targetDate,
+            meal_type: targetMealType,
+            recipe_id: addingRecipe.id
+        })
+        queryClient.invalidateQueries(['mealPlans'])
+        setAddingRecipe(null)
+        // Reset defaults
+        setTargetDate(format(new Date(), 'yyyy-MM-dd'))
+        setTargetMealType('Breakfast')
+        alert("Meal added successfully!")
+    } catch (e) {
+        alert("Failed to add meal plan")
+    }
   }
 
   if (isLoading) return (
@@ -126,6 +151,16 @@ export default function RecipeList() {
                 <div className="absolute top-3 right-3 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm px-2 py-1 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-200 shadow-sm">
                     {recipe.category}
                 </div>
+                <button 
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        setAddingRecipe(recipe)
+                    }}
+                    className="absolute top-3 left-3 bg-white/90 dark:bg-gray-800/90 p-1.5 rounded-lg text-gray-400 hover:text-orange-500 hover:bg-white dark:hover:bg-gray-800 transition-colors shadow-sm z-10"
+                    title="Add to Meal Plan"
+                >
+                    <CalendarPlus size={18} />
+                </button>
             </div>
             
             <div className="p-5 flex-1 flex flex-col">
@@ -165,6 +200,71 @@ export default function RecipeList() {
             onUpdate={handleUpdate}
             onDelete={handleDelete}
         />
+      )}
+
+      {/* Add To Plan Modal */}
+      {addingRecipe && (
+        <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center p-4 z-50 backdrop-blur-sm">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl animate-fade-in">
+                <div className="flex justify-between items-start mb-4">
+                    <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">Add to Meal Plan</h3>
+                    <button onClick={() => setAddingRecipe(null)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                        <X size={20} />
+                    </button>
+                </div>
+                
+                <div className="flex items-center gap-3 p-3 bg-orange-50 dark:bg-orange-900/20 rounded-xl mb-6 border border-orange-100 dark:border-orange-900/30">
+                     <div className="w-10 h-10 rounded-lg bg-white dark:bg-gray-800 flex-shrink-0 flex items-center justify-center overflow-hidden">
+                        {addingRecipe.image_url ? (
+                             <img src={addingRecipe.image_url} className="w-full h-full object-cover"/>
+                        ) : <Utensils size={18} className="text-orange-500" />}
+                     </div>
+                     <div>
+                         <div className="text-sm font-bold text-gray-800 dark:text-gray-100 line-clamp-1">{addingRecipe.name}</div>
+                         <div className="text-xs text-orange-600 dark:text-orange-400">{addingRecipe.calories_per_serving} kcal</div>
+                     </div>
+                </div>
+
+                <div className="space-y-4">
+                    <div>
+                        <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5">Date</label>
+                        <input 
+                            type="date" 
+                            className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-800 dark:text-gray-100"
+                            value={targetDate}
+                            onChange={(e) => setTargetDate(e.target.value)}
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5">Meal Type</label>
+                        <select 
+                            className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-800 dark:text-gray-100 appearance-none"
+                            value={targetMealType}
+                            onChange={(e) => setTargetMealType(e.target.value)}
+                        >
+                            {['Breakfast', 'Lunch', 'Dinner', 'Snack'].map(type => (
+                                <option key={type} value={type}>{type}</option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
+
+                <div className="flex gap-3 mt-8">
+                    <button 
+                        onClick={() => setAddingRecipe(null)}
+                        className="flex-1 py-2.5 rounded-xl font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                    >
+                        Cancel
+                    </button>
+                    <button 
+                        onClick={handleAddToPlan}
+                        className="flex-1 py-2.5 rounded-xl font-bold bg-orange-500 text-white hover:bg-orange-600 shadow-lg shadow-orange-500/30 transition-all active:scale-95"
+                    >
+                        Add Meal
+                    </button>
+                </div>
+            </div>
+        </div>
       )}
     </div>
   )

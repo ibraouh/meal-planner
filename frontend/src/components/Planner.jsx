@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { api } from '../lib/api'
 import { format, startOfWeek, addDays, getDay } from 'date-fns'
 import RecipeModal from './RecipeModal'
-import { ChevronLeft, ChevronRight, X, Plus, Trash2 } from 'lucide-react'
+import { ChevronLeft, ChevronRight, X, Plus, Trash2, PlusCircle } from 'lucide-react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
 const MEAL_TYPES = ['Breakfast', 'Lunch', 'Dinner', 'Snack']
@@ -68,9 +68,9 @@ export default function Planner() {
      } catch (e) { alert("Failed to delete")}
   }
 
-  // Helper to get meal for a slot
-  const getMealForSlot = (dateStr, type) => {
-      return weekMeals.find(m => m.date === dateStr && m.meal_type === type)
+  // Helper to get meals for a slot
+  const getMealsForSlot = (dateStr, type) => {
+      return weekMeals.filter(m => m.date === dateStr && m.meal_type === type)
   }
 
   // Calculate daily nutrition
@@ -112,33 +112,38 @@ export default function Planner() {
                     
                     <div className="flex-1 p-2 space-y-2">
                         {MEAL_TYPES.map(type => {
-                            const meal = getMealForSlot(dateStr, type)
+                            const meals = getMealsForSlot(dateStr, type)
                             return (
-                                <div key={type} className="min-h-[60px]">
+                                <div key={type} className="min-h-[60px] pb-2">
                                     <div className="text-xs font-bold text-gray-400 mb-1 uppercase tracking-wide">{type}</div>
-                                    {meal ? (
-                                        <div 
-                                            onClick={() => setSelectedRecipeForView(recipes.find(r => r.id === meal.recipe.id))}
-                                            className="group relative bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-900/30 p-2 rounded-lg text-sm cursor-pointer hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors"
-                                        >
-                                            <div className="font-medium text-orange-900 dark:text-orange-100 line-clamp-2 pr-4">
-                                                {meal.recipe?.name || 'Unknown Recipe'}
-                                            </div>
-                                            <button 
-                                                onClick={(e) => handleDeleteMeal(e, meal.id)}
-                                                className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 p-1"
+                                    
+                                    <div className="space-y-1">
+                                        {meals.map(meal => (
+                                            <div 
+                                                key={meal.id}
+                                                onClick={() => setSelectedRecipeForView(recipes.find(r => r.id === meal.recipe.id))}
+                                                className="group relative bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-900/30 p-2 rounded-lg text-sm cursor-pointer hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors"
                                             >
-                                                <X size={14} />
-                                            </button>
-                                        </div>
-                                    ) : (
+                                                <div className="font-medium text-orange-900 dark:text-orange-100 line-clamp-2 pr-4 text-xs">
+                                                    {meal.recipe?.name || 'Unknown Recipe'}
+                                                </div>
+                                                <button 
+                                                    onClick={(e) => handleDeleteMeal(e, meal.id)}
+                                                    className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 p-1"
+                                                >
+                                                    <X size={12} />
+                                                </button>
+                                            </div>
+                                        ))}
+                                        
                                         <div 
                                           onClick={() => handleAddMealClick(dateStr, type)}
-                                          className="w-full h-full border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-lg flex items-center justify-center text-gray-300 dark:text-gray-600 hover:border-orange-300 dark:hover:border-orange-700 hover:bg-orange-50 dark:hover:bg-orange-900/10 hover:text-orange-400 transition-all cursor-pointer"
-                                      >
-                                          <Plus size={20} strokeWidth={3} />
-                                      </div>
-                                    )}
+                                          className="w-full h-8 border-2 border-dashed border-gray-100 dark:border-gray-700/50 rounded-lg flex items-center justify-center text-gray-300 dark:text-gray-600 hover:border-orange-300 dark:hover:border-orange-700 hover:bg-orange-50 dark:hover:bg-orange-900/10 hover:text-orange-400 transition-all cursor-pointer"
+                                          title="Add Meal"
+                                        >
+                                            <Plus size={14} strokeWidth={3} />
+                                        </div>
+                                    </div>
                                 </div>
                             )
                         })}
