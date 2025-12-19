@@ -19,8 +19,7 @@ RECIPE_SCHEMA = {
     "protein_g": "integer",
     "prep_time_minutes": "integer",
     "cook_time_minutes": "integer",
-    "servings": "integer",
-    "instructions": "string (markdown format supported)"
+    "servings": "integer"
 }
 
 def parse_recipe_from_text(text: str) -> Dict[str, Any]:

@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 from uuid import UUID
 from enum import Enum
 from datetime import date
@@ -14,20 +14,47 @@ class Category(str, Enum):
 class RecipeBase(BaseModel):
     name: str
     description: Optional[str] = None
-    instructions: str
     image_url: Optional[str] = None
     category: Category
-    category: Category
-    calories_per_serving: Optional[int] = 0
     protein_g: Optional[float] = 0.0
+    
+class IngredientBase(BaseModel):
+    name: str
+    api_id: Optional[str] = None
+    calories_per_g: Optional[float] = 0.0
+    protein_per_g: Optional[float] = 0.0
+    image_url: Optional[str] = None
+
+class Ingredient(IngredientBase):
+    id: UUID
+    class Config:
+        from_attributes = True
+
+class RecipeIngredientInput(BaseModel):
+    name: str
+    api_id: Optional[str] = None
+    calories_per_g: float
+    protein_per_g: float
+    image_url: Optional[str] = None
+    amount_g: float
 
 class RecipeCreate(RecipeBase):
-    pass
+    ingredients: Optional[List[RecipeIngredientInput]] = []
+
+class IngredientDisplay(BaseModel):
+    id: UUID
+    api_id: Optional[str] = None
+    name: str
+    amount_g: float
+    calories_per_g: float
+    protein_per_g: float
+    image_url: Optional[str] = None
 
 class Recipe(RecipeBase):
     id: UUID
     user_id: UUID
     usage_count: int
+    ingredients: Optional[List[IngredientDisplay]] = []
 
     class Config:
         from_attributes = True
